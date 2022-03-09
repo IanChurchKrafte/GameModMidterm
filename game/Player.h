@@ -444,6 +444,22 @@ public:
 	virtual void			Show( void );
 
 	void					Init( void );
+	//my addition
+	//points function
+	void					addPoints(int num);
+	int						getPoints();
+	void					spawnBeserker(float num);
+	void					spawnWaves();
+	void					checkNextWeapon(int points);
+
+	//perks
+	bool					perkReload(int points);
+	bool					perkJuggs(int points);
+	bool					perkStaminUp(int points);
+	bool					perkDamageUp(int points);
+	bool					perkDoubleTap(int points);
+	//end my addition
+
  	void					PrepareForRestart( void );
  	virtual void			Restart( void );
 	void					SetWeapon ( int weapon );
@@ -639,6 +655,7 @@ public:
 #ifdef _XENON
 	void					ResetHUDWeaponSwitch( void );
 #endif
+	//void					UpdateHudPoints(int points);
 	void					UpdateHudStats( idUserInterface *hud );
  	void					UpdateHudAmmo( idUserInterface *hud );
  	void					ShowTip( const char *title, const char *tip, bool autoHide );
@@ -1153,6 +1170,9 @@ private:
 	stateResult_t			State_Legs_Fall					( const stateParms_t& parms );
 	stateResult_t			State_Legs_Land					( const stateParms_t& parms );
 	stateResult_t			State_Legs_Dead					( const stateParms_t& parms );
+
+	//My addition
+	//stateResult_t			State_Speed_Cola				( const stateParms_t& parms );
 	
  	CLASS_STATES_PROTOTYPE( idPlayer );
 };

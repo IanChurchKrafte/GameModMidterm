@@ -299,6 +299,12 @@ bool rvMonsterBerserker::Pain( idEntity *inflictor, idEntity *attacker, int dama
 	} else {
 		painConsecutive = 1;
 	}
+
+	//my addition
+	//add 10 points when they get hit, hit == pain?
+	idPlayer points;
+	points.addPoints(10);
+
 	return ( idAI::Pain( inflictor, attacker, damage, dir, location ) );
 }
 

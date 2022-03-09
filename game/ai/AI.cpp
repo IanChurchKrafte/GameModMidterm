@@ -3684,6 +3684,8 @@ void idAI::OnDeath( void ){
 
 	ExecScriptFunction( funcs.death );
 
+	//points += 100;
+
 /* DONT DROP ANYTHING FOR NOW
 	float rVal = gameLocal.random.RandomInt( 100 );
 

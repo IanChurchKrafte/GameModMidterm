@@ -119,6 +119,12 @@ const idEventDef EV_Player_AllowNewObjectives( "<allownewobjectives>" );
 
 // RAVEN END
 
+//my addition
+//initialize points
+int points;
+float spawnAmmount;
+int thisSpawn;
+int lastSpawn;
 CLASS_DECLARATION( idActor, idPlayer )
 //	EVENT( EV_Player_HideDatabaseEntry,		idPlayer::Event_HideDatabaseEntry )
 	EVENT( EV_Player_ZoomIn,				idPlayer::Event_ZoomIn )
@@ -1490,6 +1496,111 @@ void idPlayer::SetupWeaponEntity( void ) {
  	}
 }
 
+//My addition
+//function to add points on kill
+void idPlayer::addPoints(int num) {
+	points += num;
+}
+int idPlayer::getPoints() {
+	return points;
+}
+//function to spawn enemies in waves
+
+void idPlayer::spawnBeserker(float num) {
+	int enemies = (int)num;
+	for (int i = 0; i < enemies; i++) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("spawn monster_berserker\n"));
+	}
+}
+void idPlayer::spawnWaves() {
+	//1s == 1000, 1m == 60,000, 3m == 180,000
+	int currentTime = gameLocal.time;
+	if (currentTime - lastSpawn >= 5000) {	//> 3 min
+		spawnBeserker(spawnAmmount);
+		gameLocal.Printf("Should be spawning");
+		lastSpawn = currentTime;
+	}
+	else if (lastSpawn == 0)
+		spawnBeserker(spawnAmmount);
+	else
+		gameLocal.Printf("Not time for wave to spawn yet\n");
+	spawnAmmount *= 1.5;
+	
+	//check points to get next weapon
+	checkNextWeapon(points);
+	
+	//check points to get next perk
+	bool reload = perkReload(points);
+	bool juggs = perkJuggs(points);
+	bool staminUp = perkStaminUp(points);
+	bool damageUp = perkDamageUp(points);
+	bool doubleTap = perkDoubleTap(points);
+}
+void idPlayer::checkNextWeapon(int points) {
+	if (points >= 1000 && points < 2000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_machinegun\n"));
+	}
+	else if (points >= 2000 && points < 3000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_shotgun\n"));
+	}
+	else if (points >= 3000 && points < 4000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_nailgun\n"));
+	}
+	else if (points >= 4000 && points < 5000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_grenadelauncher\n"));
+	}
+	else if (points >= 5000 && points < 6000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_rocketlauncher\n"));
+	}
+	else if (points >= 6000 && points < 7000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_hyperblaster\n"));
+	}
+	else if (points >= 7000 && points < 8000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_railgun\n"));
+	}
+	else if (points >= 8000 && points < 9000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_dmg\n"));
+	}
+	else if (points >= 9000 && points < 10000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_lightninggun\n"));
+	}
+	else if (points >= 10000 && points < 11000) {
+		cmdSystem->BufferCommandText(CMD_EXEC_APPEND, va("give weapon_\n"));
+	}
+}
+
+//perks
+bool idPlayer::perkReload(int points) {
+	bool ret = false;
+	if (points >= 2000)
+		ret = true;
+	return ret;
+}
+bool idPlayer::perkJuggs(int points) {
+	bool ret = false;
+	if (points >= 3000)
+		ret = true;
+	return ret;
+}
+bool idPlayer::perkStaminUp(int points) {
+	bool ret = false;
+	if (points >= 4000)
+		ret = true;
+	return ret;
+}
+bool idPlayer::perkDamageUp(int points) {
+	bool ret = false;
+	if (points >= 5000)
+		ret = true;
+	return ret;
+}
+bool idPlayer::perkDoubleTap(int points) {
+	bool ret = false;
+	if (points >= 6000)
+		ret = true;
+	return ret;
+}
+//end my addition
 /*
 ==============
 idPlayer::Init
@@ -1547,6 +1658,10 @@ void idPlayer::Init( void ) {
 	lightningNextTime		= 0;
 
 	modelName				= idStr();
+
+	points = 0;			 //my addition
+	spawnAmmount = 1.0f;	 //my addition
+	lastSpawn = 0;
 
 	// Remove any hearing loss that may be set up from the last map
 	soundSystem->FadeSoundClasses( SOUNDWORLD_GAME, 0, 0.0f, 0 );
@@ -1766,6 +1881,8 @@ void idPlayer::Init( void ) {
 		teamDoublerPending = false;
 		teamDoubler = PlayEffect( "fx_doubler", renderEntity.origin, renderEntity.axis, true );
 	}
+
+	spawnWaves();
 }
 
 /*
@@ -3399,7 +3516,15 @@ void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 		_hud->SetStateFloat	( "player_healthpct", idMath::ClampFloat ( 0.0f, 1.0f, (float)health / (float)inventory.maxHealth ) );
 		_hud->HandleNamedEvent ( "updateHealth" );
 	}
-		
+	
+	//my addition - trying to get hud ui to work
+	//ui->SetStateString("player_points", va("%i", points));
+	temp = _hud->State().GetInt("player_points", "-1");
+	if (temp != points) {
+		_hud->SetStateInt("player_points", points);
+		_hud->HandleNamedEvent("updatePoints");
+	}
+
 	temp = _hud->State().GetInt ( "player_armor", "-1" );
 	if ( temp != inventory.armor ) {
 		_hud->SetStateInt ( "player_armorDelta", temp == -1 ? 0 : (temp - inventory.armor) );
@@ -3556,6 +3681,19 @@ void idPlayer::UpdateHudWeapon( int displayWeapon ) {
 #endif
 }
 
+/*
+My addition
+update hud with points?
+*/
+/*
+void idPlayer::UpdateHudPoints(int points) {
+	if (!points) {
+		return;
+	}
+	idUserInterface* hud = idPlayer::hud;
+	hud->SetStateInt("player_points", points);
+}
+*/
 /*
 ===============
 idPlayer::StartRadioChatter
@@ -7210,6 +7348,7 @@ void idPlayer::UpdateFocus( void ) {
 
 				ui->SetStateString( "player_health", va("%i", health ) );
 				ui->SetStateString( "player_armor", va( "%i%%", inventory.armor ) );
+
 
 				kv = ent->spawnArgs.MatchPrefix( "gui_", NULL );
 				while ( kv ) {

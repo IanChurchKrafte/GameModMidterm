@@ -43,6 +43,10 @@ CLASS_STATES_DECLARATION ( idPlayer )
 	STATE ( "Legs_Land",					idPlayer::State_Legs_Land )
 	STATE ( "Legs_Dead",					idPlayer::State_Legs_Dead )
 
+	//My addition
+	//Perk States
+	//STATE ( "Speed_Cola",					idPlayer::State_Speed_Cola )
+
 END_CLASS_STATES
 
 /*
@@ -355,6 +359,10 @@ idPlayer::State_Torso_Dead
 stateResult_t idPlayer::State_Torso_Dead ( const stateParms_t& parms ) {
 	PostAnimState ( ANIMCHANNEL_TORSO, "Wait_Alive", 0 );
 	PostAnimState ( ANIMCHANNEL_TORSO, "Torso_Idle", 0 );
+
+	//my addition
+	idPlayer points;
+	points.addPoints(100);
 	return SRESULT_DONE;
 }
 
@@ -883,6 +891,11 @@ stateResult_t idPlayer::State_Legs_Dead ( const stateParms_t& parms ) {
 	PostAnimState ( ANIMCHANNEL_LEGS, "Legs_Idle", 0 );
 	return SRESULT_DONE;
 }
+//My addition
+//State speed cola
+//stateResult_t idPlayer::State_Speed_Cola(const stateParms_t& parms); {
+	//reload faster
+//}
 
 /*
 ================

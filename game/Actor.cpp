@@ -1730,6 +1730,7 @@ void idActor::UnlinkCombat( void ) {
 	}
 }
 
+
 /*
 ================
 idActor::StartRagdoll
@@ -1739,6 +1740,12 @@ bool idActor::StartRagdoll( void ) {
 	float slomoStart, slomoEnd;
 	float jointFrictionDent, jointFrictionDentStart, jointFrictionDentEnd;
 	float contactFrictionDent, contactFrictionDentStart, contactFrictionDentEnd;
+
+	//My Addition
+	//on kill, add 100 points
+	//idPlayer point;
+	//point.addPoints(100);
+	//point.UpdateHudPoints(point.getPoints());
 
 	// if no AF loaded
 	if ( !af.IsLoaded() ) {
@@ -2487,6 +2494,15 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 	if ( damage > 0 ) {
 		int oldHealth = health;
 		AdjustHealthByDamage ( damage );
+		
+		//my addition
+		//give points for damage
+		idPlayer waves;
+		//idPlayer points;
+		//points.addPoints(10);
+		waves.spawnWaves();
+		//points.UpdateHudPoints(points.getPoints());
+
 		if ( health <= 0 ) {
 
 			//allow for quick burning
