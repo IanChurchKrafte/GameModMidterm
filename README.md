@@ -1,4 +1,4 @@
-# Game Mod Midterm README Ian Church-Krafte
+# Game Mod Midterm README - Ian Church-Krafte
 ## Test Deliverables
 Zombies spawning in waves
 - Zombies spawn in waves, beserkers spawn every 3 minutes
