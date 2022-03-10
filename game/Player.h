@@ -1170,9 +1170,6 @@ private:
 	stateResult_t			State_Legs_Fall					( const stateParms_t& parms );
 	stateResult_t			State_Legs_Land					( const stateParms_t& parms );
 	stateResult_t			State_Legs_Dead					( const stateParms_t& parms );
-
-	//My addition
-	//stateResult_t			State_Speed_Cola				( const stateParms_t& parms );
 	
  	CLASS_STATES_PROTOTYPE( idPlayer );
 };

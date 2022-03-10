@@ -1661,7 +1661,7 @@ void idPlayer::Init( void ) {
 
 	points = 0;			 //my addition
 	spawnAmmount = 1.0f;	 //my addition
-	lastSpawn = 0;
+	lastSpawn = 0;			//my addition
 
 	// Remove any hearing loss that may be set up from the last map
 	soundSystem->FadeSoundClasses( SOUNDWORLD_GAME, 0, 0.0f, 0 );
@@ -3517,8 +3517,6 @@ void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 		_hud->HandleNamedEvent ( "updateHealth" );
 	}
 	
-	//my addition - trying to get hud ui to work
-	//ui->SetStateString("player_points", va("%i", points));
 	temp = _hud->State().GetInt("player_points", "-1");
 	if (temp != points) {
 		_hud->SetStateInt("player_points", points);
@@ -3681,19 +3679,6 @@ void idPlayer::UpdateHudWeapon( int displayWeapon ) {
 #endif
 }
 
-/*
-My addition
-update hud with points?
-*/
-/*
-void idPlayer::UpdateHudPoints(int points) {
-	if (!points) {
-		return;
-	}
-	idUserInterface* hud = idPlayer::hud;
-	hud->SetStateInt("player_points", points);
-}
-*/
 /*
 ===============
 idPlayer::StartRadioChatter

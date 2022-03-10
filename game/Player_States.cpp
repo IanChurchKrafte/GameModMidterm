@@ -43,9 +43,6 @@ CLASS_STATES_DECLARATION ( idPlayer )
 	STATE ( "Legs_Land",					idPlayer::State_Legs_Land )
 	STATE ( "Legs_Dead",					idPlayer::State_Legs_Dead )
 
-	//My addition
-	//Perk States
-	//STATE ( "Speed_Cola",					idPlayer::State_Speed_Cola )
 
 END_CLASS_STATES
 
